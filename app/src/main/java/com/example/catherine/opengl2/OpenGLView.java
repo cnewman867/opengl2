@@ -43,12 +43,12 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
                         "void main(void)\n" +
                         "{\n" +
                         "gl_Position = uPerspMtx * uMvMtx * aVertex;\n" +
-                        "\n",
+                        "}\n",
 
                 fragmentShader =
                         "precision mediump float;\n" +
                         "uniform vec4 uColour;\n" +
-                                "void main(void\n" +
+                                "void main(void)\n" +
                                 "{\n" +
                                 "gl_FragColor = uColour;\n" +
                                 "}\n";
@@ -77,7 +77,7 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
             Matrix.translateM(modelview, 0, -1, 0, 0);
 
             gpuInterface.sendMatrix(modelview, "uMvNtx");
-            gpuInterface.setUniform4fv("uColour", new float[]{0, 0, 1, 1});
+            gpuInterface.setUniform4fv("uColour", new float[]{0, 1, 0, 1});
             gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 3, 3);
 
             Matrix.rotateM(modelview, 0, 45, 0, 0, 1);
