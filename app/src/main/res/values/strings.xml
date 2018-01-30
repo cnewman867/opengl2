@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">OpenGL2</string>
+    <string name = "btn1">x+1</string>
+    <string name = "btn2">y+1</string>
+    <string name = "btn3">z+1</string>
+    <string name = "btn4">x-1</string>
+    <string name = "btn5">y-1</string>
+    <string name = "btn6">z-1</string>
 </resources>

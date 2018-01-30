@@ -1,4 +1,4 @@
-package com.example.catherine.opengl2;
+package com.example.catherine.opengl23;
 
 /**
  * Created by catherine on 30/01/18.
@@ -67,7 +67,7 @@ public class GPUInterface {
 
     public void drawBufferedData(Buffer vertices, int stride, String attrVar, int vertexStart, int nVertices) {
 
-        if(isValid()) {
+        if(checkValid()) {
             int attrVarRef = getShaderVarRef(attrVar);
             vertices.position(0);
 
@@ -78,19 +78,19 @@ public class GPUInterface {
     }
 
     public int getShaderVarRef(String shaderVar) {
-        int refAttrVar = isValid() ? GLES20.glGetAttribLocation(shaderProgram, shaderVar) : -1;
+        int refAttrVar = checkValid() ? GLES20.glGetAttribLocation(shaderProgram, shaderVar) : -1;
         return refAttrVar;
     }
 
     public void sendMatrix(float[] mtx, String shaderMtxVar) {
-        if(isValid()) {
+        if(checkValid()) {
             int refMtxVar = GLES20.glGetUniformLocation(shaderProgram, shaderMtxVar);
             GLES20.glUniformMatrix4fv(refMtxVar, 1, false, mtx, 0);
         }
     }
 
     public void setUniform4fv(String shaderVar, float[] val) {
-        if(isValid()) {
+        if(checkValid()) {
             int refShaderVar = GLES20.glGetUniformLocation(shaderProgram, shaderVar);
             GLES20.glUniform4fv(refShaderVar, 1, val, 0);
         }
@@ -101,7 +101,7 @@ public class GPUInterface {
         GLES20.glUseProgram(shaderProgram);
     }
 
-    public boolean isValid() {
+    public boolean checkValid() {
         return shaderProgram >= 0;
     }
 }

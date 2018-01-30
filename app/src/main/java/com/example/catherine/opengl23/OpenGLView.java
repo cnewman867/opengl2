@@ -1,4 +1,4 @@
-package com.example.catherine.opengl2;
+package com.example.catherine.opengl23;
 
 /**
  * Created by catherine on 30/01/18.
@@ -10,6 +10,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.AttributeSet;
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ByteOrder;
@@ -20,13 +22,15 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
     FloatBuffer vbuf;
     float[] modelview;
     float[] perspective;
+    float[] cameraPosition;
 
-    public OpenGLView (Context ctx) {
-        super(ctx);
+    public OpenGLView (Context ctx, AttributeSet as) {
+        super(ctx, as);
         setEGLContextClientVersion(2);
         setRenderer(this);
         modelview = new float[16];
         perspective = new float[16];
+        cameraPosition = new float[3];
 
         Matrix.setIdentityM(modelview, 0);
         Matrix.setIdentityM(perspective, 0);
@@ -64,27 +68,23 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         gpuInterface.select();
 
-        // check that the shaders have actually compile!
-        if(gpuInterface.isValid()) {
+        // check that the shaders have actually compiled!
+        if(gpuInterface.checkValid()) {
             Matrix.setIdentityM(modelview, 0);
+            Matrix.translateM(modelview, 0,  -cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
             gpuInterface.sendMatrix(modelview, "uMvMtx");
             gpuInterface.sendMatrix(perspective, "uPerspMtx");
             gpuInterface.setUniform4fv("uColour", new float[]{1, 0, 0, 1});
             gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 0, 3);
+            gpuInterface.setUniform4fv("uColour", new float[]{0.5f, 0, 0, 1});
+            gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 3, 3);
             gpuInterface.setUniform4fv("uColour", new float[]{1, 1, 0, 1});
-            gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 3, 3);
-
-            Matrix.translateM(modelview, 0, -1, 0, 0);
-
-            gpuInterface.sendMatrix(modelview, "uMvNtx");
+            gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 6, 3);
             gpuInterface.setUniform4fv("uColour", new float[]{0, 1, 0, 1});
-            gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 3, 3);
+            gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 9, 3);
+            gpuInterface.setUniform4fv("uColour", new float[]{0,0, 1, 1});
+            gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 12, 3);
 
-            Matrix.rotateM(modelview, 0, 45, 0, 0, 1);
-
-            gpuInterface.sendMatrix(modelview, "uMvMtx");
-            gpuInterface.setUniform4fv("uColour", new float[]{0, 0, 1, 1});
-            gpuInterface.drawBufferedData(vbuf, 12, "aVertex", 3, 3);
         }
     }
 
@@ -98,12 +98,24 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
     }
 
     private void createShapes() {
-        float[] vertices = {0, 0, -3, 1, 0, -3, 0.5f, 1, -3, -0.5f, 0, -6, 0.5f, 0, -6, 0, 1, -6};
+        float[] vertices = {0, 0, -3, 1, 0, -3, 0.5f, 1, -3, -0.5f, 0, -6, 0.5f, 0, -6, 0, 1, -6, 0,0,3, 1, 0, 3, 0.5f, 1, 3,2, 0, 0.5f, 2, 0, 0.5f, 2, 1, 0, -2, 0, -0.5f, -2, 0, 0.5f, -2, 1, 0};
 
         ByteBuffer vbuf0 = ByteBuffer.allocateDirect(vertices.length * Float.SIZE);
         vbuf0.order(ByteOrder.nativeOrder());
         vbuf = vbuf0.asFloatBuffer();
         vbuf.put(vertices);
         vbuf.position(0);
+    }
+
+    public void moveX(float dist) {
+        cameraPosition[0] += dist;
+    }
+
+    public void moveY(float dist) {
+        cameraPosition[1] += dist;
+    }
+
+    public void moveZ(float dist) {
+        cameraPosition[2] += dist;
     }
 }
