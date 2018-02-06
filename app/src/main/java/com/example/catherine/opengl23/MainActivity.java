@@ -24,6 +24,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         y2.setOnClickListener(this);
         Button z2 = (Button)findViewById(R.id.btn6);
         z2.setOnClickListener(this);
+        Button rotA = (Button)findViewById(R.id.btn7);
+        rotA.setOnClickListener(this);
+        Button rotB = (Button)findViewById(R.id.btn8);
+        rotB.setOnClickListener(this);
+        Button mvBack = (Button)findViewById(R.id.btn9);
+        mvBack.setOnClickListener(this);
+        Button mvFwd = (Button)findViewById(R.id.btn10);
+        mvFwd.setOnClickListener(this);
     }
 
     public void onClick(View view) {
@@ -40,6 +48,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
             ogl.moveZ(1);
         } else if(view.getId() == R.id.btn6) {
             ogl.moveZ(-1);
+        } else if(view.getId() == R.id.btn7) {
+            ogl.rotateBearing( 10 );
+        } else if(view.getId() == R.id.btn8) {
+            ogl.rotateBearing( -10 );
+        } else if(view.getId() == R.id.btn9) {
+            ogl.moveCamera( -1 );
+        } else if(view.getId() == R.id.btn10) {
+            ogl.moveCamera( 1 );
         }
     }
 }

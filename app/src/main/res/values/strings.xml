@@ -6,4 +6,8 @@
     <string name = "btn4">x-1</string>
     <string name = "btn5">y-1</string>
     <string name = "btn6">z-1</string>
+    <string name = "btn7">&lt;</string>
+    <string name = "btn8">&gt;</string>
+    <string name = "btn9">Back</string>
+    <string name = "btn10">Fwd</string>
 </resources>

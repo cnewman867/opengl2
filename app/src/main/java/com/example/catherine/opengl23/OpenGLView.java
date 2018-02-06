@@ -23,6 +23,8 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
     float[] modelview;
     float[] perspective;
     float[] cameraPosition;
+    float cameraBearing;
+
 
     public OpenGLView (Context ctx, AttributeSet as) {
         super(ctx, as);
@@ -71,6 +73,7 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
         // check that the shaders have actually compiled!
         if(gpuInterface.checkValid()) {
             Matrix.setIdentityM(modelview, 0);
+            Matrix.rotateM(modelview, 0,-cameraBearing, 0, 1, 0 );
             Matrix.translateM(modelview, 0,  -cameraPosition[0], -cameraPosition[1], -cameraPosition[2]);
             gpuInterface.sendMatrix(modelview, "uMvMtx");
             gpuInterface.sendMatrix(perspective, "uPerspMtx");
@@ -98,7 +101,7 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
     }
 
     private void createShapes() {
-        float[] vertices = {0, 0, -3, 1, 0, -3, 0.5f, 1, -3, -0.5f, 0, -6, 0.5f, 0, -6, 0, 1, -6, 0,0,3, 1, 0, 3, 0.5f, 1, 3,2, 0, 0.5f, 2, 0, 0.5f, 2, 1, 0, -2, 0, -0.5f, -2, 0, 0.5f, -2, 1, 0};
+        float[] vertices = {0, 0, -3, 1, 0, -3, 0.5f, 1, -3, -0.5f, 0, -6, 0.5f, 0, -6, 0, 1, -6, 0,0,3, 1, 0, 3, 0.5f, 1, 3,2, 0, -0.5f, 2, 0, 0.5f, 2, 1, 0, -2, 0, -0.5f, -2, 0, 0.5f, -2, 1, 0};
 
         ByteBuffer vbuf0 = ByteBuffer.allocateDirect(vertices.length * Float.SIZE);
         vbuf0.order(ByteOrder.nativeOrder());
@@ -118,4 +121,13 @@ public class OpenGLView extends GLSurfaceView implements GLSurfaceView.Renderer{
     public void moveZ(float dist) {
         cameraPosition[2] += dist;
     }
+
+    public void rotateBearing(float rot) { cameraBearing += rot; }
+
+    public void moveCamera(float dist) {
+        cameraPosition[0] -= dist*Math.sin(cameraBearing * (Math.PI / 180));
+        cameraPosition[2] -= dist*Math.cos(cameraBearing * (Math.PI / 180));
+    }
+
+
 }
